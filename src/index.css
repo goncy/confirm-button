@@ -3,11 +3,12 @@
 @tailwind utilities;
 
 :root {
+  @apply bg-stone-950;
+
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -32,9 +33,10 @@
 
 @layer base {
   :root {
-    --color-primary: #171717;
-    --color-secondary: #ef4444;
-    --color-warning: #d97706;
-    --color-success: #22c55e;
+    --color-primary: theme("colors.stone.800");
+    --color-secondary: theme("colors.rose.600");
+    --color-warning: theme("colors.amber.500");
+    --color-alert: theme("colors.amber.600");
+    --color-success: theme("colors.emerald.600");
   }
 }

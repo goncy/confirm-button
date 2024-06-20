@@ -6,7 +6,7 @@ type Status = "initial" | "confirmation" | "success"
 
 // Possible backgrounds for the parent button, the initial state and the final state are handled by the parent
 const bgVariants: Partial<Record<Status, Variant>> = {
-  confirmation: { backgroundColor: 'var(--color-warning)' },
+  confirmation: { backgroundColor: 'var(--color-alert)' },
   success: { backgroundColor: 'var(--color-success)' },
 }
 
@@ -88,7 +88,7 @@ function ButtonWithConfirmation({ children, onClick, className = '', ...props }:
             </motion.span>
             <motion.span
               className="absolute py-8"
-              initial={{ width: '100%', left: '0px', height: '100%', backgroundColor: "#f59e0b" }}
+              initial={{ width: '100%', left: '0px', height: '100%', backgroundColor: "var(--color-warning)" }}
               animate={status === "confirmation"
                 ? { width: '0%', transition: { duration: 3, ease: 'linear' } }
                 : { opacity: 0, width: '0%', transition: { duration: 0 } }}
