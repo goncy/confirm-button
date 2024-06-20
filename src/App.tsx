@@ -1,8 +1,21 @@
-import {HTMLMotionProps, motion} from "framer-motion"
+import {HTMLMotionProps, Variant, Variants, motion} from "framer-motion"
 import { useEffect, useState } from "react"
 
+type Status = "initial" | "prompted" | "success" | "completed"
+
+const bgVariants: Record<Status, Variant> = {
+  initial: {backgroundColor: 'var(--color-primary)'},
+  prompted: {backgroundColor: 'var(--color-warning)'},
+  success: {backgroundColor: 'var(--color-success)'},
+  completed: {backgroundColor: 'var(--color-secondary)'},
+}
+const presenceVariants: Variants = {
+  visible: {opacity: 1, y: 0},
+  hidden: {opacity: 0, y: 100},
+}
+
 function ButtonWithConfirmation({children, onClick, ...props}: HTMLMotionProps<"button">) {
-  const [status, setStatus] = useState<"initial" | "prompted" | "success" | "completed">("initial")
+  const [status, setStatus] = useState<Status>("initial")
 
   function handleClick(event: React.MouseEvent<HTMLButtonElement>) {
     if (status === "initial") {
@@ -34,25 +47,18 @@ function ButtonWithConfirmation({children, onClick, ...props}: HTMLMotionProps<"
   return (
     <motion.button
       className="overflow-hidden text-white rounded-full relative origin-top flex items-center justify-center py-2 px-8"
-      initial={{backgroundColor: 'var(--color-primary)'}}
-      animate={{
-        backgroundColor:
-          status === "success"
-            ? 'var(--color-success)'
-            : status === "prompted"
-              ? 'var(--color-warning)'
-              : status === "completed"
-                ? 'var(--color-secondary)'
-                : 'var(--color-primary)'
-      }}
+      initial="initial"
+      animate={status}
+      variants={bgVariants}
       onClick={handleClick}
       {...props}
     >
       {/* initial */}
       <motion.p
         className="flex items-center justify-center"
-        initial={{y: 0, opacity: 1}}
-        animate={status === "initial" ? {y: 0, opacity: 1} : {y: 100, opacity: 0}}
+        initial="visible"
+        variants={presenceVariants}
+        animate={status === "initial" ? "visible" : "hidden"}
       >
         {children}
       </motion.p>
@@ -60,12 +66,9 @@ function ButtonWithConfirmation({children, onClick, ...props}: HTMLMotionProps<"
       {/* prompted? */}
       <motion.p
         className="w-full h-full absolute flex items-center justify-center"
-        initial={{y: -100, opacity: 0}}
-        animate={["initial", "completed"].includes(status)
-          ? {y: -100, opacity: 0}
-          : status === "prompted"
-            ? {y: 0, opacity: 1}
-            : {y: 100, opacity: 0}}
+        initial="hidden"
+        variants={presenceVariants}
+        animate={status === "prompted" ? "visible" : "hidden"}
       >
           <motion.span className="z-10">
             Confirm?
@@ -74,22 +77,17 @@ function ButtonWithConfirmation({children, onClick, ...props}: HTMLMotionProps<"
             className="absolute py-8"
             initial={{width: '0%', left: '0px', height: '100%', backgroundColor: "#0000002f"}}
             animate={status === "prompted"
-              ? {width: '100%', height: '100%', transition: {duration: 3, ease: 'linear'}}
-              : ["success", "initial"].includes(status)
-                ? {opacity: 0, transition: {duration: 0}}
-                : {width: '0%', height: '100%'}}
+              ? {width: '100%', transition: {duration: 3, ease: 'linear'}}
+              : {opacity: 0, width: '0%', transition: {duration: 0}}}
           />
       </motion.p>
 
       {/* success */}
       <motion.p
         className="w-full h-full absolute flex items-center justify-center text-xl"
-        initial={{y: -100, opacity: 0}}
-        animate={["prompted"].includes(status)
-          ? {y: -100, opacity: 0}
-          : status === "success"
-            ? {y: 0, opacity: 1}
-            : {y: 100, opacity: 0}}
+        initial="hidden"
+        variants={presenceVariants}
+        animate={status === "success" ? "visible" : "hidden"}
       >
         ✓
       </motion.p>
@@ -97,12 +95,9 @@ function ButtonWithConfirmation({children, onClick, ...props}: HTMLMotionProps<"
       {/* completed */}
       <motion.p
         className="w-full h-full absolute flex items-center justify-center"
-        initial={{y: -100, opacity: 0}}
-        animate={["success"].includes(status)
-          ? {y: -100, opacity: 0}
-          : status === "completed"
-            ? {y: 0, opacity: 1}
-            : {y: -100, opacity: 0}}
+        initial="hidden"
+        variants={presenceVariants}
+        animate={status === "completed" ? "visible" : "hidden"}
       >
         Subscribed
       </motion.p>
@@ -112,7 +107,7 @@ function ButtonWithConfirmation({children, onClick, ...props}: HTMLMotionProps<"
 
 function App() {
   return (
-    <ButtonWithConfirmation onClick={() => console.log("Confirmed!")}>
+    <ButtonWithConfirmation style={{zoom: 5}} onClick={() => console.log("Confirmed!")}>
       Subscribe
     </ButtonWithConfirmation>
   )
