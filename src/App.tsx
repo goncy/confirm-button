@@ -1,20 +1,19 @@
-import {HTMLMotionProps, Variant, Variants, motion} from "framer-motion"
+import { AnimatePresence, HTMLMotionProps, Variant, Variants, motion } from "framer-motion"
 import { useEffect, useState } from "react"
 
-type Status = "initial" | "prompted" | "success" | "completed"
+type Status = "initial" | "prompted" | "success"
 
-const bgVariants: Record<Status, Variant> = {
-  initial: {backgroundColor: 'var(--color-primary)'},
-  prompted: {backgroundColor: 'var(--color-warning)'},
-  success: {backgroundColor: 'var(--color-success)'},
-  completed: {backgroundColor: 'var(--color-secondary)'},
+const bgVariants: Partial<Record<Status, Variant>> = {
+  prompted: { backgroundColor: 'var(--color-warning)' },
+  success: { backgroundColor: 'var(--color-success)' },
 }
 const presenceVariants: Variants = {
-  visible: {opacity: 1, y: 0},
-  hidden: {opacity: 0, y: 100},
+  initial: { opacity: 0, y: -100, position: "relative", width: "100%" },
+  visible: { opacity: 1, y: 0, position: "relative", width: "100%" },
+  hidden: { opacity: 0, y: 100, position: "relative", width: "100%" },
 }
 
-function ButtonWithConfirmation({children, onClick, ...props}: HTMLMotionProps<"button">) {
+function ButtonWithConfirmation({ children, onClick, className = '', ...props }: HTMLMotionProps<"button">) {
   const [status, setStatus] = useState<Status>("initial")
 
   function handleClick(event: React.MouseEvent<HTMLButtonElement>) {
@@ -24,8 +23,6 @@ function ButtonWithConfirmation({children, onClick, ...props}: HTMLMotionProps<"
       setStatus("success")
       onClick?.(event)
     } else if (status === "success") {
-      setStatus("completed")
-    } else if (status === "completed") {
       setStatus("initial")
     }
   }
@@ -37,78 +34,90 @@ function ButtonWithConfirmation({children, onClick, ...props}: HTMLMotionProps<"
       timeout = setTimeout(() => setStatus("initial"), 3000)
     } else if (status === "success") {
       timeout = setTimeout(() => {
-        setStatus("completed")
+        setStatus("initial")
       }, 2000)
     }
-    
+
     return () => clearTimeout(timeout)
   }, [status])
 
   return (
-    <motion.button
-      className="overflow-hidden text-white rounded-full relative origin-top flex items-center justify-center py-2 px-8"
-      initial="initial"
-      animate={status}
-      variants={bgVariants}
-      onClick={handleClick}
-      {...props}
-    >
-      {/* initial */}
-      <motion.p
-        className="flex items-center justify-center"
-        initial="visible"
-        variants={presenceVariants}
-        animate={status === "initial" ? "visible" : "hidden"}
+    <AnimatePresence initial={false}>
+      <motion.button
+        layout
+        className={`overflow-hidden min-w-32 text-white rounded-full relative origin-top flex items-center justify-center py-2 ${className}`}
+        initial="initial"
+        animate={status}
+        variants={bgVariants}
+        onClick={handleClick}
+        {...props}
       >
-        {children}
-      </motion.p>
+        {/* initial */}
+        {status === "initial" && (
+          <motion.p
+            className="flex items-center justify-center px-4"
+            initial="initial"
+            variants={presenceVariants}
+            animate="visible"
+            exit="hidden"
+          >
+            {children}
+          </motion.p>
+        )}
 
-      {/* prompted? */}
-      <motion.p
-        className="w-full h-full absolute flex items-center justify-center"
-        initial="hidden"
-        variants={presenceVariants}
-        animate={status === "prompted" ? "visible" : "hidden"}
-      >
-          <motion.span className="z-10">
-            Confirm?
-          </motion.span>
-          <motion.span
-            className="absolute py-8"
-            initial={{width: '0%', left: '0px', height: '100%', backgroundColor: "#0000002f"}}
-            animate={status === "prompted"
-              ? {width: '100%', transition: {duration: 3, ease: 'linear'}}
-              : {opacity: 0, width: '0%', transition: {duration: 0}}}
-          />
-      </motion.p>
+        {/* prompted? */}
+        {status === "prompted" && (
+          <motion.p
+            className="flex items-center justify-center px-4"
+            initial="initial"
+            variants={presenceVariants}
+            animate="visible"
+            exit="hidden"
+          >
+            <motion.span className="z-10">
+              Confirm?
+            </motion.span>
+            <motion.span
+              className="absolute py-8"
+              initial={{ width: '0%', left: '0px', height: '100%', backgroundColor: "#0000002f" }}
+              animate={status === "prompted"
+                ? { width: '100%', transition: { duration: 3, ease: 'linear' } }
+                : { opacity: 0, width: '0%', transition: { duration: 0 } }}
+            />
+          </motion.p>
+        )}
 
-      {/* success */}
-      <motion.p
-        className="w-full h-full absolute flex items-center justify-center text-xl"
-        initial="hidden"
-        variants={presenceVariants}
-        animate={status === "success" ? "visible" : "hidden"}
-      >
-        ✓
-      </motion.p>
-
-      {/* completed */}
-      <motion.p
-        className="w-full h-full absolute flex items-center justify-center"
-        initial="hidden"
-        variants={presenceVariants}
-        animate={status === "completed" ? "visible" : "hidden"}
-      >
-        Subscribed
-      </motion.p>
-    </motion.button>
+        {/* success */}
+        {status === "success" && (
+          <motion.p
+            className="flex items-center justify-center px-8"
+            initial="initial"
+            variants={presenceVariants}
+            animate="visible"
+            exit="hidden"
+          >
+            ✓
+          </motion.p>
+        )}
+      </motion.button>
+    </AnimatePresence>
   )
 }
 
 function App() {
+  const [isSubscribed, setIsSubscribed] = useState<boolean>(false)
+
   return (
-    <ButtonWithConfirmation style={{zoom: 5}} onClick={() => console.log("Confirmed!")}>
-      Subscribe
+    <ButtonWithConfirmation
+      style={{
+        zoom: 5,
+        backgroundColor: isSubscribed
+          ? 'var(--color-secondary)'
+          : 'var(--color-primary)'
+      }}
+      onClick={() => setIsSubscribed(subscribed => !subscribed)}
+    >
+      {isSubscribed ? 'Unsubscribe' : 'Subscribe'}
     </ButtonWithConfirmation>
   )
 }
