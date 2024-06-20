@@ -88,9 +88,9 @@ function ButtonWithConfirmation({ children, onClick, className = '', ...props }:
             </motion.span>
             <motion.span
               className="absolute py-8"
-              initial={{ width: '0%', left: '0px', height: '100%', backgroundColor: "#0000002f" }}
+              initial={{ width: '100%', left: '0px', height: '100%', backgroundColor: "#f59e0b" }}
               animate={status === "confirmation"
-                ? { width: '100%', transition: { duration: 3, ease: 'linear' } }
+                ? { width: '0%', transition: { duration: 3, ease: 'linear' } }
                 : { opacity: 0, width: '0%', transition: { duration: 0 } }}
             />
           </motion.p>
