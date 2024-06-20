@@ -13,7 +13,7 @@ const bgVariants: Partial<Record<Status, Variant>> = {
 // These variants handles the in and out animations and also the styles that the visible button has to have
 const presenceVariants: Variants = {
   initial: { opacity: 0, y: -100, position: "relative", width: "100%" },
-  visible: { opacity: 1, y: 0, position: "relative", width: "100%" },
+  visible: { opacity: 1, y: 0, position: "relative", width: "100%", transition: { type: 'spring', stiffness: 200, damping: 15, mass: 0.55 } },
   hidden: { opacity: 0, y: 100, position: "relative", width: "100%" },
 }
 
@@ -38,7 +38,7 @@ function ButtonWithConfirmation({ children, onClick, className = '', ...props }:
 
     // A timeout for the confirmation state, if user didn't confirm after 3 seconds, go back to an initial state
     if (status === "confirmation") {
-      timeout = setTimeout(() => setStatus("initial"), 3000)
+      timeout = setTimeout(() => setStatus("initial"), 3500)
     } else if (status === "success") {
       // After showing the success state for 2 seconds, go back to an initial state
       timeout = setTimeout(() => setStatus("initial"), 2000)
@@ -88,10 +88,8 @@ function ButtonWithConfirmation({ children, onClick, className = '', ...props }:
             </motion.span>
             <motion.span
               className="absolute py-8"
-              initial={{ width: '100%', left: '0px', height: '100%', backgroundColor: "var(--color-warning)" }}
-              animate={status === "confirmation"
-                ? { width: '0%', transition: { duration: 3, ease: 'linear' } }
-                : { opacity: 0, width: '0%', transition: { duration: 0 } }}
+              initial={{ width: '100%', left: '0px', backgroundColor: "var(--color-warning)" }}
+              animate={{ width: '0%', transition: { duration: 3, ease: 'linear', delay: 0.5 } }}
             />
           </motion.p>
         )}
