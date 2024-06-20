@@ -72,12 +72,12 @@ function ButtonWithConfirmation({children, onClick, ...props}: HTMLMotionProps<"
           </motion.span>
           <motion.span
             className="absolute py-8"
-            initial={{width: '100%', left: '0px', height: '100%', backgroundColor: "#0000002f"}}
+            initial={{width: '0%', left: '0px', height: '100%', backgroundColor: "#0000002f"}}
             animate={status === "prompted"
-              ? {width: '0px', height: '100%', transition: {duration: 3, ease: 'linear'}}
+              ? {width: '100%', height: '100%', transition: {duration: 3, ease: 'linear'}}
               : ["success", "initial"].includes(status)
-                ? {opacity: 0}
-                : {width: '100%', height: '100%'}}
+                ? {opacity: 0, transition: {duration: 0}}
+                : {width: '0%', height: '100%'}}
           />
       </motion.p>
 
