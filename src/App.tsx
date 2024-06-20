@@ -13,7 +13,7 @@ const bgVariants: Partial<Record<Status, Variant>> = {
 // These variants handles the in and out animations and also the styles that the visible button has to have
 const presenceVariants: Variants = {
   initial: { opacity: 0, y: -100, position: "relative", width: "100%" },
-  visible: { opacity: 1, y: 0, position: "relative", width: "100%", transition: { type: 'spring', stiffness: 200, damping: 15, mass: 0.55 } },
+  visible: { opacity: 1, y: 0, position: "relative", width: "100%", transition: { type: 'spring', stiffness: 250, damping: 20, mass: 0.8 } },
   hidden: { opacity: 0, y: 100, position: "relative", width: "100%" },
 }
 
