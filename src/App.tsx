@@ -54,7 +54,7 @@ function ButtonWithConfirmation({ children, onClick, className = '', ...props }:
         // Ensure we set `layout` in the parent button as the width changes between transitions. Otherwise the button will jump between states
         // In this example you won't see the jump because we set a min-width in the button, remove it if you want to see it
         layout
-        className={`overflow-hidden min-w-32 text-white rounded-full relative origin-top flex items-center justify-center py-2 ${className}`}
+        className={`overflow-hidden min-w-32 rounded-full relative origin-top flex items-center justify-center py-2 ${className}`}
         initial="initial"
         animate={status}
         variants={bgVariants}
