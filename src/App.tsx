@@ -118,7 +118,7 @@ function App() {
     <ButtonWithConfirmation
       style={{
         // We just set a zoom so it's easier to see the button
-        zoom: 5,
+        zoom: 3,
         backgroundColor: isSubscribed
           ? 'var(--color-secondary)'
           : 'var(--color-primary)'
